@@ -1,8 +1,10 @@
 # iOS XCUITest Portfolio
 
+[![XCUITest CI](https://github.com/gustavaom7/xcuitest-portfolio/actions/workflows/xcode-tests.yml/badge.svg)](https://github.com/gustavaom7/xcuitest-portfolio/actions/workflows/xcode-tests.yml)
+
 Comprehensive UI automation suite for iOS using **XCUITest** framework. Built to demonstrate professional test architecture with **Page Object Pattern**, **accessibility best practices**, and **CI/CD integration**.
 
-> This project is a portfolio artifact showcasing iOS automation expertise aligned with modern QA practices and Swift best practices.
+> This project is a portfolio artifact showcasing iOS automation expertise aligned with modern QA practices and Swift best practices. Tests run in GitHub Actions — no Xcode installation required locally.
 
 ## Why this project
 
@@ -73,39 +75,48 @@ xcuitest-portfolio/
 
 ## Quick Start
 
-### 1. Clone & Setup
+### ⚡ CI/CD Only (No Xcode Required)
+
+This project runs tests **exclusively in GitHub Actions** (cloud). You don't need Xcode installed locally.
+
+**Workflow:**
+1. Clone repository
+2. Edit code in any editor (VSCode, Vim, etc.)
+3. Commit & push to GitHub
+4. GitHub Actions runs tests automatically
+5. View results in Actions tab
+
+See [CI_CD_ONLY.md](CI_CD_ONLY.md) for detailed setup.
+
+### Quick Push
 
 ```bash
+# Clone
 git clone https://github.com/gustavaom7/xcuitest-portfolio.git
 cd xcuitest-portfolio
+
+# Edit any test file
+# (VSCode, Sublime, Vim, etc.)
+
+# Commit & push
+git add .
+git commit -m "Update tests"
+git push origin main
+
+# View results
+# → GitHub Actions tab → See test status
 ```
 
-### 2. Open in Xcode
+### (Optional) Local Testing with Xcode
+
+If you have Xcode installed:
 
 ```bash
+# Open in Xcode
 open SampleApp.xcodeproj
-```
 
-### 3. Select test target
-
-- Scheme: **SampleApp**
-- Product → Test (⌘U) or select test target in sidebar
-
-### 4. Run tests
-
-**Single test file:**
-```bash
-xcodebuild test -scheme SampleApp -only-testing SampleAppUITests/LoginTests
-```
-
-**All tests:**
-```bash
-xcodebuild test -scheme SampleApp
-```
-
-**With specific device:**
-```bash
-xcodebuild test -scheme SampleApp -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'
+# Run all tests (⌘U)
+# Or: xcodebuild test -scheme SampleApp
 ```
 
 ## Key Features
@@ -168,11 +179,12 @@ Generates test reports and uploads artifacts.
 
 ## Documentation
 
-- **[SETUP.md](docs/SETUP.md)** - Local environment setup
+- **[CI_CD_ONLY.md](CI_CD_ONLY.md)** - How to work without Xcode (cloud testing)
+- **[SETUP.md](docs/SETUP.md)** - Local environment setup (optional, with Xcode)
 - **[PAGE_OBJECTS.md](docs/PAGE_OBJECTS.md)** - Architecture & patterns
 - **[ACCESSIBILITY.md](docs/ACCESSIBILITY.md)** - iOS a11y best practices
 - **[ASYNC_HANDLING.md](docs/ASYNC_HANDLING.md)** - Synchronization strategies
-- **[CI_CD.md](docs/CI_CD.md)** - GitHub Actions workflow
+- **[CI_CD.md](docs/CI_CD.md)** - GitHub Actions workflow details
 
 ## Test Results
 
