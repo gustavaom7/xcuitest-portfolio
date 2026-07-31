@@ -1,0 +1,63 @@
+# Xcode
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+
+# CocoaPods
+Pods/
+Podfile.lock
+*.xcworkspace
+
+# Carthage
+Carthage/
+Cartfile.resolved
+
+# Test artifacts
+*.xcresult
+*.xcresult/
+test-results/
+test-results.xcresult/
+
+# Code coverage
+*.profraw
+*.profdata
+coverage/
+coverage.xml
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Build products
+*.app
+*.dSYM/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local

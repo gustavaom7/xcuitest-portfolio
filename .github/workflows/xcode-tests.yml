@@ -1,0 +1,98 @@
+name: XCUITest CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 9 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: XCUITest
+    runs-on: macos-latest-xlarge
+
+    strategy:
+      matrix:
+        device: ["iPhone 15"]
+        os: ["17.5"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Select Xcode version
+      run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+    - name: List Xcode versions
+      run: |
+        xcode-select --print-path
+        xcodebuild -version
+
+    - name: Build for Testing
+      run: |
+        xcodebuild build-for-testing \
+          -scheme SampleApp \
+          -configuration Debug \
+          -destination 'platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.os }}'
+
+    - name: Run XCUITests
+      run: |
+        xcodebuild test \
+          -scheme SampleApp \
+          -configuration Debug \
+          -destination 'platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.os }}' \
+          -resultBundlePath test-results.xcresult \
+          -resultBundleVersion 3 \
+          -verbose
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: xctest-results-${{ matrix.device }}-${{ matrix.os }}
+        path: test-results.xcresult
+        retention-days: 30
+
+    - name: Parse and Report Results
+      if: always()
+      run: |
+        # Extract pass/fail counts
+        xcrun xcresulttool get --format json test-results.xcresult > results.json || true
+        echo "Test run completed"
+        cat results.json || echo "No results JSON available"
+
+    - name: Comment PR with Results
+      if: always() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const testStatus = '${{ job.status }}';
+          const message = `## XCUITest Results\n\n**Status:** ${testStatus}\n\nTests ran on **${{ matrix.device }}** with **iOS ${{ matrix.os }}**\n\n[View full results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: message
+          });
+
+    - name: Generate Summary
+      if: always()
+      run: |
+        echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Device:** ${{ matrix.device }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **iOS Version:** ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Run:** [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -f results.json
+        echo "Cleanup completed"
